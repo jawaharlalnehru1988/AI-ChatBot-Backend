@@ -3,6 +3,8 @@ import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { OpenaiModule } from './openai/openai.module';
+import { LivekitModule } from './livekit/livekit.module';
+import { StreamingModule } from './streaming/streaming.module';
 
 @Module({
   imports: [
@@ -10,6 +12,8 @@ import { OpenaiModule } from './openai/openai.module';
       isGlobal: true,
     }),
     OpenaiModule,
+    LivekitModule,
+    StreamingModule,
   ],
   controllers: [AppController],
   providers: [AppService],

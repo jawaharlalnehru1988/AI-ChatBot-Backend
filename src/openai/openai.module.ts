@@ -19,5 +19,6 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
       inject: [ConfigService],
     }
   ],
+  exports: [OpenaiService], // Export the service so other modules can use it
 })
 export class OpenaiModule {}

@@ -6,6 +6,7 @@ import OpenAI from 'openai';
 @Injectable()
 export class OpenaiService {
   constructor(private readonly openai: OpenAI) {}
+  
   async createChatCompletion(createOpenaiDto: CreateOpenaiDto) {
     const messages = createOpenaiDto.messages.map((msg: any) => ({
       role: msg.role,
@@ -17,6 +18,38 @@ export class OpenaiService {
       model: 'gpt-4o-mini', // Cheaper alternative
     });
     return response;
+  }
+
+  async *createStreamingChatCompletion(createOpenaiDto: CreateOpenaiDto) {
+    const messages = createOpenaiDto.messages.map((msg: any) => ({
+      role: msg.role,
+      content: msg.content,
+      ...(msg.name && { name: msg.name })
+    }));
+    
+    const stream = await this.openai.chat.completions.create({
+      messages: messages,
+      model: 'gpt-4o-mini',
+      stream: true, // Enable streaming
+    });
+
+    for await (const chunk of stream) {
+      const content = chunk.choices[0]?.delta?.content || '';
+      if (content) {
+        yield {
+          content,
+          timestamp: new Date().toISOString(),
+          isComplete: false,
+        };
+      }
+    }
+    
+    // Send completion signal
+    yield {
+      content: '',
+      timestamp: new Date().toISOString(),
+      isComplete: true,
+    };
   }
 
   findAll() {
