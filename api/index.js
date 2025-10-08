@@ -5,11 +5,12 @@ const { ValidationPipe } = require('@nestjs/common');
 let app;
 
 module.exports = async (req, res) => {
-  // Set CORS headers immediately for preflight requests
+  // Set CORS headers immediately for preflight requests - Allow ALL headers
   res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,PATCH,OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With, Accept, Origin');
+  res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,PATCH,OPTIONS,HEAD');
+  res.header('Access-Control-Allow-Headers', '*');
   res.header('Access-Control-Allow-Credentials', 'true');
+  res.header('Access-Control-Max-Age', '86400');
   
   // Handle preflight OPTIONS requests
   if (req.method === 'OPTIONS') {
@@ -21,28 +22,14 @@ module.exports = async (req, res) => {
     app = await NestFactory.create(AppModule);
     
     app.enableCors({
-      origin: function (origin, callback) {
-        // Allow requests with no origin (like mobile apps or curl requests)
-        if (!origin) return callback(null, true);
-        
-        // Allow all origins in development/testing
-        return callback(null, true);
-      },
-      methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-      allowedHeaders: [
-        'Content-Type', 
-        'Authorization', 
-        'Accept', 
-        'Origin', 
-        'X-Requested-With',
-        'Access-Control-Allow-Origin',
-        'Access-Control-Allow-Headers',
-        'Access-Control-Allow-Methods'
-      ],
+      origin: true, // Allow all origins
+      methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS', 'HEAD'],
+      allowedHeaders: '*', // Allow all headers including custom ones
       exposedHeaders: ['Content-Range', 'X-Content-Range'],
       credentials: true,
       preflightContinue: false,
-      optionsSuccessStatus: 200
+      optionsSuccessStatus: 200,
+      maxAge: 86400
     });
     
     app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
