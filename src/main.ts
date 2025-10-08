@@ -15,9 +15,6 @@ async function bootstrap() {
     .setTitle('NestJS OpenAI & System Design API')
     .setDescription('API documentation for OpenAI integration, LiveKit, and System Design resources')
     .setVersion('1.0')
-    .addTag('systemdesign', 'System Design CRUD operations')
-    .addTag('openai', 'OpenAI ChatGPT integration with streaming')
-    .addTag('livekit', 'LiveKit real-time communication')
     .addBearerAuth()
     .build();
   
