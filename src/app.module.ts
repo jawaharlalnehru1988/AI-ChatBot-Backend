@@ -5,6 +5,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { SystemdesignModule } from './systemdesign/systemdesign.module';
 import { AgenticAiModule } from './agentic-ai/agentic-ai.module';
+import { McqTrainingModule } from './mcq-training/mcq-training.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { AgenticAiModule } from './agentic-ai/agentic-ai.module';
     MongooseModule.forRoot('mongodb+srv://nehru00123:Soundarya1994@harekrishna.iaouzqs.mongodb.net/asknehru'),
     SystemdesignModule,
     AgenticAiModule,
+    McqTrainingModule,
   ],
   controllers: [AppController],
   providers: [AppService],
