@@ -6,6 +6,8 @@ import { AppService } from './app.service';
 import { SystemdesignModule } from './systemdesign/systemdesign.module';
 import { AgenticAiModule } from './agentic-ai/agentic-ai.module';
 import { McqTrainingModule } from './mcq-training/mcq-training.module';
+import { ReactLearningModule } from './react-learning/react-learning.module';
+import { ReactTopicsModule } from './react-topics/react-topics.module';
 
 @Module({
   imports: [
@@ -16,6 +18,8 @@ import { McqTrainingModule } from './mcq-training/mcq-training.module';
     SystemdesignModule,
     AgenticAiModule,
     McqTrainingModule,
+    ReactLearningModule,
+    ReactTopicsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
