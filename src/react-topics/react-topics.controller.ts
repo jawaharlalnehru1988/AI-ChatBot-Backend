@@ -23,21 +23,22 @@ export class ReactTopicsController {
   }
 
   @Get()
-  @ApiOperation({ summary: 'Get all React topics or filter by section' })
+  @ApiOperation({ summary: 'Get all React topics or filter by IDs' })
   @ApiQuery({ 
-    name: 'sectionId', 
+    name: 'ids', 
     required: false, 
-    description: 'Filter topics by section MongoDB ID',
-    example: '507f1f77bcf86cd799439011' 
+    description: 'Comma-separated list of topic MongoDB IDs to filter',
+    example: '507f1f77bcf86cd799439011,507f1f77bcf86cd799439012' 
   })
   @ApiResponse({ 
     status: 200, 
-    description: 'Return all topics or filtered by section.',
+    description: 'Return all topics or filtered by IDs.',
     type: [ReactTopic] 
   })
-  findAll(@Query('sectionId') sectionId?: string) {
-    if (sectionId) {
-      return this.reactTopicsService.findBySection(sectionId);
+  findAll(@Query('ids') ids?: string) {
+    if (ids) {
+      const topicIds = ids.split(',');
+      return this.reactTopicsService.findByIds(topicIds);
     }
     return this.reactTopicsService.findAll();
   }

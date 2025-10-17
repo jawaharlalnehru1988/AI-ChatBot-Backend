@@ -66,23 +66,6 @@ export class ReactLearningController {
     return this.reactLearningService.getLevelStatistics(level);
   }
 
-  @Get('section/:sectionId')
-  @ApiOperation({ summary: 'Get a section by sectionId' })
-  @ApiParam({ 
-    name: 'sectionId', 
-    description: 'Section identifier',
-    example: 'react-basics' 
-  })
-  @ApiResponse({ 
-    status: 200, 
-    description: 'Return the section with the specified sectionId.',
-    type: ReactLearning 
-  })
-  @ApiResponse({ status: 404, description: 'Section not found' })
-  findBySectionId(@Param('sectionId') sectionId: string) {
-    return this.reactLearningService.findBySectionId(sectionId);
-  }
-
   @Get(':id')
   @ApiOperation({ summary: 'Get a section by MongoDB ID' })
   @ApiParam({ 
@@ -98,6 +81,22 @@ export class ReactLearningController {
   @ApiResponse({ status: 404, description: 'Section not found' })
   findOne(@Param('id') id: string) {
     return this.reactLearningService.findOne(id);
+  }
+
+  @Get(':id/with-topics')
+  @ApiOperation({ summary: 'Get a section by MongoDB ID with full topic details' })
+  @ApiParam({ 
+    name: 'id', 
+    description: 'MongoDB Object ID',
+    example: '507f1f77bcf86cd799439011' 
+  })
+  @ApiResponse({ 
+    status: 200, 
+    description: 'Return the section with full topic details populated.'
+  })
+  @ApiResponse({ status: 404, description: 'Section not found' })
+  findOneWithTopics(@Param('id') id: string) {
+    return this.reactLearningService.findOneWithTopics(id);
   }
 
   @Get(':id/topics')

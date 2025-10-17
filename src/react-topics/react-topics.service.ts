@@ -17,23 +17,24 @@ export class ReactTopicsService {
   }
 
   async findAll(): Promise<ReactTopic[]> {
-    return this.reactTopicModel.find().populate('sectionId').exec();
-  }
-
-  async findBySection(sectionId: string): Promise<ReactTopic[]> {
-    return this.reactTopicModel.find({ sectionId: new Types.ObjectId(sectionId) }).exec();
+    return this.reactTopicModel.find().exec();
   }
 
   async findByTopicId(topicId: string): Promise<ReactTopic> {
-    const topic = await this.reactTopicModel.findOne({ topicId }).populate('sectionId').exec();
+    const topic = await this.reactTopicModel.findOne({ topicId }).exec();
     if (!topic) {
       throw new NotFoundException(`Topic with topicId ${topicId} not found`);
     }
     return topic;
   }
 
+  async findByIds(topicIds: string[]): Promise<ReactTopic[]> {
+    const objectIds = topicIds.map(id => new Types.ObjectId(id));
+    return this.reactTopicModel.find({ _id: { $in: objectIds } }).exec();
+  }
+
   async findOne(id: string): Promise<ReactTopic> {
-    const topic = await this.reactTopicModel.findById(id).populate('sectionId').exec();
+    const topic = await this.reactTopicModel.findById(id).exec();
     if (!topic) {
       throw new NotFoundException(`Topic with ID ${id} not found`);
     }
@@ -43,7 +44,6 @@ export class ReactTopicsService {
   async update(id: string, updateReactTopicDto: UpdateReactTopicDto): Promise<ReactTopic> {
     const updatedTopic = await this.reactTopicModel
       .findByIdAndUpdate(id, updateReactTopicDto, { new: true })
-      .populate('sectionId')
       .exec();
     if (!updatedTopic) {
       throw new NotFoundException(`Topic with ID ${id} not found`);
@@ -62,7 +62,6 @@ export class ReactTopicsService {
   async markAsCompleted(id: string): Promise<ReactTopic> {
     const topic = await this.reactTopicModel
       .findByIdAndUpdate(id, { isCompleted: true }, { new: true })
-      .populate('sectionId')
       .exec();
     if (!topic) {
       throw new NotFoundException(`Topic with ID ${id} not found`);
@@ -73,7 +72,6 @@ export class ReactTopicsService {
   async markAsIncomplete(id: string): Promise<ReactTopic> {
     const topic = await this.reactTopicModel
       .findByIdAndUpdate(id, { isCompleted: false }, { new: true })
-      .populate('sectionId')
       .exec();
     if (!topic) {
       throw new NotFoundException(`Topic with ID ${id} not found`);

@@ -1,14 +1,16 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { CreateReactLearningDto } from './dto/create-react-learning.dto';
 import { UpdateReactLearningDto } from './dto/update-react-learning.dto';
 import { ReactLearning } from './entities/react-learning.entity';
+import { ReactTopicsService } from '../react-topics/react-topics.service';
 
 @Injectable()
 export class ReactLearningService {
   constructor(
     @InjectModel(ReactLearning.name) private reactLearningModel: Model<ReactLearning>,
+    private reactTopicsService: ReactTopicsService,
   ) {}
 
   async create(createReactLearningDto: CreateReactLearningDto): Promise<ReactLearning> {
@@ -22,14 +24,6 @@ export class ReactLearningService {
 
   async findByLevel(level: string): Promise<ReactLearning[]> {
     return this.reactLearningModel.find({ level }).populate('topicIds').exec();
-  }
-
-  async findBySectionId(sectionId: string): Promise<ReactLearning> {
-    const section = await this.reactLearningModel.findOne({ sectionId }).populate('topicIds').exec();
-    if (!section) {
-      throw new NotFoundException(`Section with sectionId ${sectionId} not found`);
-    }
-    return section;
   }
 
   async findOne(id: string): Promise<ReactLearning> {
@@ -70,8 +64,11 @@ export class ReactLearningService {
       throw new NotFoundException(`Section with ID ${sectionId} not found`);
     }
     
-    if (!section.topicIds.includes(topicId as any)) {
-      section.topicIds.push(topicId as any);
+    const topicObjectId = new Types.ObjectId(topicId);
+    const isTopicAlreadyAdded = section.topicIds.some(id => id.toString() === topicObjectId.toString());
+    
+    if (!isTopicAlreadyAdded) {
+      section.topicIds.push(topicObjectId);
       return section.save();
     }
     
@@ -100,10 +97,28 @@ export class ReactLearningService {
       totalSections: sections.length,
       totalTopics,
       sections: sections.map(section => ({
-        sectionId: section.sectionId,
+        id: section._id,
         title: section.title,
         totalTopics: section.topicIds?.length || 0,
       })),
+    };
+  }
+
+  /**
+   * Get a learning section with full topic details populated
+   */
+  async findOneWithTopics(id: string): Promise<any> {
+    const section = await this.reactLearningModel.findById(id).exec();
+    if (!section) {
+      throw new NotFoundException(`Section with ID ${id} not found`);
+    }
+
+    const topicIds = section.topicIds.map(id => id.toString());
+    const topics = await this.reactTopicsService.findByIds(topicIds);
+
+    return {
+      ...section.toObject(),
+      topics,
     };
   }
 }

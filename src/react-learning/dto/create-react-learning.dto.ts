@@ -3,14 +3,6 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateReactLearningDto {
   @ApiProperty({
-    description: 'Unique identifier for the section',
-    example: 'react-basics',
-  })
-  @IsString()
-  @IsNotEmpty()
-  sectionId: string;
-
-  @ApiProperty({
     description: 'Difficulty level',
     example: 'Beginner',
     enum: ['Beginner', 'Intermediate', 'Advanced'],

@@ -90,12 +90,4 @@ export class CreateReactTopicDto {
   @IsBoolean()
   @IsOptional()
   isCompleted?: boolean;
-
-  @ApiProperty({
-    description: 'MongoDB ObjectId of the section this topic belongs to',
-    example: '507f1f77bcf86cd799439011',
-  })
-  @IsMongoId()
-  @IsNotEmpty()
-  sectionId: string;
 }

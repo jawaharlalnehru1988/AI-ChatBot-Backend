@@ -45,10 +45,6 @@ export class ReactTopic extends Document {
   @ApiProperty({ description: 'Whether the topic is completed', default: false })
   @Prop({ default: false })
   isCompleted: boolean;
-
-  @ApiProperty({ description: 'Reference to the section this topic belongs to' })
-  @Prop({ type: Types.ObjectId, ref: 'ReactLearning', required: true })
-  sectionId: Types.ObjectId;
 }
 
 export const ReactTopicSchema = SchemaFactory.createForClass(ReactTopic);
